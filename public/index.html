@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>野上本館 案内係 アイコ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>いらっしゃいませ、野上本館です。</h1>
+  <div id="chatbox"></div>
+  <input id="input" placeholder="メッセージを入力..." />
+  <button onclick="sendMessage()">送信</button>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("input");
+      const message = input.value;
+      const chatbox = document.getElementById("chatbox");
+
+      if (!message) return;
+
+      chatbox.innerHTML += `<div><strong>あなた：</strong>${message}</div>`;
+      input.value = "";
+
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+
+      const data = await response.json();
+      chatbox.innerHTML += `<div><strong>アイコ：</strong>${data.reply}</div>`;
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
